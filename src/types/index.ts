@@ -1,38 +1,64 @@
-export type ProductCategory = 'софт-скил' | 'другое' | 'дополнительное' | 'кнопка' | 'хард-скил';
-//товар
 export interface IProduct {
     id: string;
-    category: ProductCategory;
-    title: string;
     description: string;
-    price: number;
-    imageURL: string;
+    image: string;
+    title: string;
+    category: string;
+    price: number | null;
 }
 
-export type PaymentOrder = 'online' | 'cash';
+export interface ICard extends IProduct {
+    index?: number;
+}
 
-// заказ
-export interface IOrder {
-    payment: PaymentOrder;
-    adress: string;
+export interface IAnyForm extends IOrderForm, IContactsForm { }
+
+export interface IOrder extends IAnyForm {
+    total: number;
+    items: Uuid[];
+}
+
+export interface IAppState {
+    catalog: IProduct[];
+    basket: IProduct[];
+    order: IOrder;
+    orderFormErrors: OrderFormErrors;
+    contactsFormErrors: ContactsFormErrors;
+}
+
+export type Uuid = string;
+
+export interface IPage {
+    cartCounter: number;
+    catalog: HTMLElement[];
+}
+
+export interface IOrderForm {
+    address: string;
+    payment: string;
+}
+export interface IContactsForm {
     email: string;
     phone: string;
-    items: string[];
+}
+
+export type OrderFormErrors = Partial<Record<keyof IOrderForm, string>>;
+export type ContactsFormErrors = Partial<Record<keyof IContactsForm, string>>;
+
+export interface IOrderResult {
+    id: Uuid;
     total: number;
 }
 
-//корзина
-export interface ICart {
-    counter: number;
+export type ApiListResponse<Type> = {
     total: number;
-    items: string[];
-}
+    items: Type[];
+};
 
+export type FormName = 'order' | 'contacts';
 
-
-// состояние приложения
-export interface IHomePage {
-    catalog: IProduct[];
-    cart: ICart[] | null;
-    cartTotal: number;
+// Добавляем интерфейс IFormValid
+export interface IFormValid {
+    valid: boolean;
+    errors: string[];
 }
